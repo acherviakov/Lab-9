@@ -1,4 +1,5 @@
 
+
 from tabulate import *
 from random import *
 '''
@@ -57,7 +58,35 @@ def selection_sort(array):
         comparation_counter += add_comparations
         sorted_elements_amount += 1
     return [array, comparation_counter, swap_counter]
+'''
+Сортировка вставками от 1 до n:
+    Для каждого элемента начиная со второго:
+        Пока индекс больше нуля и значение меньше значения предыдущего элемента (+1 сравнение):
+            обменяем этот элемент с предыдущим 
+            повторим для предыдущего элемента.
+            +1 к перестановкам
+'''
+def one_cycle_of_insertion_sort(array, index):
+    comparation_counter = 0
+    swap_counter = 0
+    while index > 0 and (array[index] < array[index - 1]):
+        comparation_counter += 1
+        array[index], array[index - 1] = array[index - 1], array[index]
+        index -= 1
+        swap_counter += 1
+    comparation_counter += 1
+    return (array, comparation_counter, swap_counter)
 
+
+def insertion_sort(array):
+    comparation_counter = 0
+    swap_counter = 0
+    for index in range(1, len(array)):
+        array, add_comparations, add_swaps = one_cycle_of_insertion_sort(array, index)
+        comparation_counter += add_comparations
+        swap_counter += add_swaps
+        
+    return [array, comparation_counter, swap_counter]
 
 
 def find_max(array):
@@ -114,17 +143,19 @@ def start():
 '''
 Если режим работы демонстрационный, то:
 1. создадим массив из 1000 случайных элементов от 0 до 99.
-2. отсортировать массив пузырьком (простым обменом)
+2. отсортировать массив пузырьком, простым обменом
 3. отсортировать массив вставками
-4. отсортировать способом
 5. вывести режим результатов
 6. предложить выйти, введя любую строку
 '''
 def run_demo_mode():
     array = [randint(0, 99) for index in range(1000)]
+    array_copy = array.copy()
     table = []
     table.append(["Сортировка пузырьком"] + bubble_sort(array)[1:])
     table.append(["Cортировка простым выбором"] + selection_sort(array)[1:])
+    array = array_copy
+    table.append(["Cортировка вставками"] + insertion_sort(array)[1:])
     headers = ["Сортировка", "Сравнения", "Перестановки" ]
     print(tabulate(table, headers=headers))
     print("Введите любую строку, чтобы выйти")
@@ -140,14 +171,12 @@ def run_demo_mode():
 1. Предложить ввести размер массива, если он не является числом, то написать об этом и повторить операцию
 2. Сгенерировать массив (случайные числа от 0 до 99)
 2+. Сохранить себе его.
-3. отсортировать его пузырьком
-4. отсортировать его вставками
-5. отсортировать простым выбором 
+3-5. вывести таблицу
 6. Спросить пользователя о его дальнейших действиях.
 7. Если пользователь ввёл 1, то замена части массива:
     Вводится начальный индекс замены, часть массива.
-    +проверка, чтобы введенные данные являлись числами и начальный индекс находится от 0 до длины массива, иначе повторить ввод 
-    +проверить, что сумма индекса замены и длины части массива не больше, чем индекс последнего элемента, иначяе повторить ввод
+    +проверка, чтобы введенные данные являлись числами и начальный индекс находится от 0 до длины массива, иначе повторить ввод
+    +проверить, что сумма индекса замены и длины части массива не больше, чем индекс последнего элемента, иначе повторить ввод
 8. Если пользователь ввёл 2, то вывести массив (отсортированный)
 8+. Если пользователь ввёл 3, то вывести неотсортированный массив
 9. Если пользователь ввёл 4, то повторить сначала
@@ -158,6 +187,62 @@ def run_demo_mode():
 
 
 '''
+
+'''
+1. выполнить сортировку пузырьком
+2. выполнить сортировку выбором
+3. выполнить сортировку вставками
+4. вывести в виде таблицы
+'''
+def show_table(array, unsorted_array):
+    table = []
+    table.append(["Сортировка пузырьком"] + bubble_sort(array)[1:])
+    table.append(["Cортировка простым выбором"] + selection_sort(array)[1:])
+    array = unsorted_array
+    table.append(["Cортировка вставками"] + insertion_sort(array)[1:])
+    headers = ["Сортировка", "Сравнения", "Перестановки" ]
+    print(tabulate(table, headers=headers))
+
+'''
+Проверим, что все элемнты списка -  числа
+'''
+def is_number_array(array):
+    for element in array:
+        if not(is_number(element)):
+            return False
+    return True
+
+def action(array, unsorted_array):
+    action_code = input()
+    if action_code == "1":
+        print("Введите индекс, начиная с которого хотите сделать замену")
+        possible = True
+        while not possible:
+            starter = input()
+            if(not is_number(starter)):
+                print("Введите число, а не " + starter)
+            else:
+                if int(starter) >= len(unsorted_array):
+                    print("Ошибка. Стартовый элемент не должен лежать за пределами массива")
+                else:
+                    possible = True
+            starter_position = int(starter)
+        
+
+
+
+    elif action_code == "2":
+        print(array)
+        action()
+    elif action_code == "3":
+        print(unsorted_array)
+        action()
+    elif action_code == "4":
+        array = unsorted_array
+        show_table(array, unsorted_array)
+        action()
+    else:
+        start()
 
 def run_interactive_mode():
     size = ""
@@ -173,24 +258,14 @@ def run_interactive_mode():
             else:
                 size_possible = True
     array = [randint(0, 99) for index in range(int(size))]
-    unsorted_array = array.copy
+    unsorted_array = array.copy()
     table = []
     table.append(["Сортировка пузырьком"] + bubble_sort(array)[1:])
     table.append(["Cортировка простым выбором"] + selection_sort(array)[1:])
+    array = unsorted_array
+    table.append(["Cортировка вставками"] + insertion_sort(array)[1:])
     headers = ["Сортировка", "Сравнения", "Перестановки" ]
     print(tabulate(table, headers=headers))
     print("Чтобы изменить массив (изначальный), введите 1. Чтобы вывести его (будет выведен отсортированный), введите 2. Чтобы вывести неотсортированный (изначальный) массив, введите 3. Чтобы отсорировать ещё раз, введите 4. Чтобы выйти, введите любую другую строку")
-    action_code = input()
-    if action_code == "1":
-        print("???")
-
-
-    elif action_code == "2":
-        print(array)
-    elif action_code == "3":
-        print(unsorted_array)
-    elif action_code == "4":
-        run_interactive_mode()
-    else:
-        start()
+    
 start()
