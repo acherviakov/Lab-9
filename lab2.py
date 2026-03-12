@@ -256,7 +256,9 @@ def action(array, unsorted_array):
                 else:
                     possible = True
                     number_replacement_list = list(map(int, value))
-        unsorted_array = unsorted_array[0:starter_position]+number_replacement_list+unsorted_array[starter_position+len(number_replacement_list):]
+        unsorted_array_keeper = unsorted_array[0:starter_position]+number_replacement_list+unsorted_array[starter_position+len(number_replacement_list):]
+        unsorted_array.clear()
+        unsorted_array.extend(unsorted_array_keeper)
         action(array, unsorted_array)
         
 
@@ -295,3 +297,4 @@ def run_interactive_mode():
     action(array, unsorted_array)
     
 start()
+
