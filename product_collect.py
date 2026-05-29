@@ -1,5 +1,5 @@
-from planet import *
-class Collect:
+from product import *
+class Shop:
     def __init__(self, array):
         self.array = array
     def __str__(self):
@@ -7,29 +7,29 @@ class Collect:
     def run_query(self, data):
         data = data.split()
         if(data[0] == "create"):
-            planet = Planet(1,1,"Unnamed_"+str(Planet.counter),1,"Nonetype")
+            product = Product("xxx", "xxx", 1, 1, "xxx")
             wrong_generation = False
             for el in data[1:]:
-                result = planet.run_changer(el)
+                result = product.run_changer(el)
                 if result == 1:
                     wrong_generation = True
             if not wrong_generation:
-                self.array.append(planet)
+                self.array.append(product)
         elif(data[0] == "change"):
-            planet = Planet(1,1,"Unnamed_"+str(Planet.counter),1,"Nonetype")
+            product =  Product("xxx", "xxx", 1, 1, "xxx")
             wrong_generation = False
             for el in data[1:]:
-                result = planet.run_changer(el)
+                result = product.run_changer(el)
                 if result == 1:
                     wrong_generation = True
             if not wrong_generation:
-                self.array.append(planet)
+                self.array.append(product)
                 print(styled("Успешно!","green"))
         elif(data[0] == "delete"):
-            planet_name = data[1]
-            if planet_name.isdigit():
+            product_name = data[1]
+            if product_name.isdigit():
                 found = False
-                id = int(planet_name)
+                id = int(product_name)
                 for i in range(len(self.array)):
                     if self.array[i].id == id:
                         del self.array[i]
@@ -40,7 +40,7 @@ class Collect:
                     print(f"ID {id} успешно удалён")
             else:
                 found = False
-                name = planet_name
+                name = product_name
                 for i in range(len(self.array)):
                     if self.array[i].name == name:
                         del self.array[i]
@@ -50,34 +50,34 @@ class Collect:
                 else:
                     print(f"{name} успешно удалён")
         elif(data[0] == "print"):
-           for planet in self.array:
-               print(planet)
+           for product in self.array:
+               print(product)
         elif(data[0] == "save"):
            self.write_in_database()
         elif(data[0] == "read"):
            self.read_from_database()
         elif(data[0] == "help"):
             if len(data) == 1:
-                print("Доступные команды: create, chanoge, help, delete, print, save, sort, read. Подробнее: help <command>")
+                print("Доступные команды: create, change, help, delete, print, save, sort, read. Подробнее: help <command>")
             else:
-                Collect.help(data[1])
+                Shop.help(data[1])
         elif(data[0] == "sort"):
             self.array = self.bubble_sort(self.array, data[1])
         else:
             print_error(f"Не существует команды {data[0]}")
     def write_in_database(self):
-        with open("db.txt", "w") as database:
-            for planet in self.array:
-                print(repr(planet), file=database)
+        with open("db2.txt", "w") as database:
+            for product in self.array:
+                print(repr(product), file=database)
     def read_from_database(self):
-        with open("db.txt", "r") as database:
+        with open("db2.txt", "r") as database:
             self.array = []
             max_id = 0
             for line in database:
                 current_line = line.strip("\n")
-                self.array.append(Planet.from_string(current_line))
+                self.array.append(Product.from_string(current_line))
                 max_id = max(self.array[-1].id, max_id)
-            Planet.counter = max_id
+            Product.counter = max_id
     def help(command):
         if command == "help":
             print("help <command> - Подсказывает пользователю, как работает команда <command>")
@@ -89,20 +89,19 @@ class Collect:
                 Аттрибуты:
                 name:<строка> 
                 type:<cтрока>
-                mass:<число><g - в граммах, kg - в килограммах, em - в массах Земли>
-                distance:<число><m - в метрах, km - в километрах, au - в астономических единицах>
-                radius:<число><m - в метрах, km - в километрах>
+                price:<число>
+  
                 Примеры: 
                 name:Mars
-                radius:18.5km
+                price:1389
                 '''
             )
         elif command == "create":
-            print("create <changerblock-1> <changerblock-2> ... - создаёт планету с исходными параметрами")
+            print("create <changerblock-1> <changerblock-2> ... - создаёт товар с исходными параметрами")
         elif command == "change":
-            print("change <ID/имя> <changerblock-1> <changerblock-2> ... - изменяет переметры планеты с заданным именем или ID")
+            print("change <ID/имя> <changerblock-1> <changerblock-2> ... - изменяет переметры товара с заданным именем или ID")
         elif command == "delete":
-            print("delete <ID/имя> ... - удаляет планету с заданным именем или ID")
+            print("delete <ID/имя> ... - удаляет товар с заданным именем или ID")
         elif command == "read":
             print("read - считать данные из базы данных")
         elif command == "save":

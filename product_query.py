@@ -1,16 +1,16 @@
 
-from planet import *
-from collect import Collect
+from product import *
+from product_collect import Shop
 def query(collection):
     data = input()
     if (data != "close"):
         try:
             collection.run_query(data)
         except Exception as exception:
-            print("Неверный ввод")
+            print(exception)
         query(collection)
 
 
-
-query(Collect([]))
+def products():
+    query(Shop([]))
     

@@ -139,8 +139,21 @@ class Planet:
             else:
                 unit += symbol
         return (value, unit)
-            
-            
+    
+
+    def value(self, attribute):
+        if attribute == "radius":
+            return self.radius_in_km
+        elif attribute == "mass":
+            return self.mass_in_kg
+        elif attribute == "distance":
+            return self.distance_from_sun_in_million_km
+        elif attribute == "type":
+            return self.type
+        elif attribute == "name":
+            return self.name
+        else:
+            return self.id
 
 
     
